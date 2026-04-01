@@ -8,6 +8,96 @@ import io
 from datetime import datetime
 
 st.set_page_config(page_title="Global Stock Screener", layout="wide")
+
+# CUSTOM CSS
+st.markdown("""
+<style>
+    /* Gradient background */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1e3a8a 0%, #1e293b 100%);
+    }
+    
+    /* Main content area */
+    .main .block-container {
+        background: rgba(255,255,255,0.95);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    /* Title gradient */
+    h1 {
+        background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800 !important;
+    }
+    
+    /* Tabs modern design */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: transparent;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    }
+    
+    /* Buttons */
+    .stButton>button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+    }
+    
+    /* Success/Warning boxes */
+    .stSuccess {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        border-radius: 12px;
+        color: #1e293b;
+    }
+    
+    .stWarning {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        border-radius: 12px;
+        color: #1e293b;
+    }
+    
+    /* Dataframe modern */
+    .stDataFrame {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    /* Download button */
+    .stDownloadButton>button {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+</style>
+""", unsafe_allow_html=True)
 st.title("📊 Global Stock Screener — Daily")
 st.caption("⏱ Timeframe: **Daily (1D)** — Yahoo Finance via yfinance")
 
