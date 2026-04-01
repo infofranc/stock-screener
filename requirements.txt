@@ -1,6 +1,7 @@
 streamlit>=1.30
 yfinance>=0.2.36
 pandas>=2.0
-pandas-ta>=0.3.14b0
+numpy>=1.26
 plotly>=5.18
 requests>=2.31
+pandas-ta==0.3.14b
