@@ -1,5 +1,6 @@
 import streamlit as st
 import yfinance as yf
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -132,7 +133,9 @@ SP500="AAPL,MSFT,GOOGL,AMZN,NVDA,META,TSLA,BRK-B,LLY,V,UNH,JPM,XOM,MA,JNJ,AVGO,W
 NASDAQ="AAPL,MSFT,GOOGL,GOOG,AMZN,NVDA,META,TSLA,AVGO,COST,NFLX,AMD,PEP,ADBE,CSCO,TMUS,CMCSA,INTC,TXN,QCOM,INTU,AMGN,HON,AMAT,SBUX,BKNG,ISRG,ADP,VRTX,GILD,REGN,ADI,MU,LRCX,MELI,PANW,KLAC,PYPL,MDLZ,SNPS,CDNS,ASML,MRVL,MAR,CTAS,AZN,ORLY,MNST,FTNT,CSX,ABNB,ADSK,DXCM,CHTR,PCAR,WDAY,NXPI,PAYX,CPRT,CRWD,AEP,ODFL,ROST,KDP,FAST,ON,VRSK,BKR,GEHC,EXC,TEAM,LULU,CSGP,DDOG,CTSH,XEL,IDXX,KHC,BIIB,CCEP,ANSS,ZS,TTD,CDW,WBD,MDB,ILMN,GFS".split(",")
 RUSSELL="SMCI,KVUE,CELH,DOCS,DECK,IONQ,RBLX,HIMS,TPL,JXN,CCCS,FIVE,MNDY,CASY,MOD,FTAI,MATX,IBP,CHH,CNM,GPI,PLAB,COKE,INSM,NEOG,AIT,BCC,GMED,CBZ,AAON,CWEN,DIOD,HELE,CWST,CNX,HQY,CNXC,APAM,MCY,SKYW,TBBK,CRS,CW,VCTR,MWA,SHOO,SANM,POWL,NSP".split(",")
 FTSE="ENI.MI,UCG.MI,ISP.MI,TIT.MI,ENEL.MI,STLAM.MI,STM.MI,G.MI,A2A.MI,AZM.MI,CPR.MI,FBK.MI,RACE.MI,BAMI.MI,BMED.MI,TEN.MI,LDO.MI,HER.MI,PST.MI,ATL.MI,SPM.MI,CNHI.MI,BGN.MI,BZU.MI,PRY.MI,MONC.MI,AMP.MI,IP.MI,SRG.MI,REC.MI".split(",")
-DAX="SIE.DE,SAP.DE,ALV.DE,DTE.DE,VOW3.DE,MBG.DE,BMW.DE,BAYN.DE,ADS.DE,BAS.DE,MUV2.DE,DB1.DE,HEN3.DE,SHL.DE,IFX.DE,DHL.DE,CON.DE,1COV.DE,HNR1.DE,HEI.DE,VOW.DE,BNR.DE,ZAL.DE,RWE.DE,VNA.DE,QIA.DE,PAH3.DE,FRE.DE,P911.DE,HFG.DE".split(",")
+DAX="SIE.DE,SAP.DE,ALV.DE,DTE.DE,VOW3.DE,MBG.DE,BMW.DE,BAYN.DE,ADS.DE,BAS.DE,MUV2.DE,DB1.DE,HEN3.DE,SHL.DE,IFX.DE,DHL.DE,CON.DE,1COV.DE,HNR1.DE,HEI.DE,VOW.DE,BNR.DE,ZAL.DE,RWE.DE,VNA.DE,QIA.DE,PAH3.DE,MARKETS={"S&P 500":SP500, "NASDAQ 100":NASDAQ, "CAC 40":CAC40, "CRYPTO":CRYPTO, "RUSSELL 2000":RUSSELL, "FTSE MIB":FTSE, "DAX 40":DAX, "ESTOXX 50":ESTOXX, "NIKKEI 225":NIKKEI}
+CAC40="OR.PA,AIR.PA,MC.PA,KER.PA,RMS.PA,EL.PA,SAN.PA,BNP.PA,TTE.PA,CS.PA,DG.PA,BN.PA,SU.PA,VIE.PA,STLAP.PA,ACA.PA,ML.PA,GLE.PA,SGO.PA,AI.PA"
+CRYPTO="BTC-USD,ETH-USD,BNB-USD,SOL-USD,XRP-USD,ADA-USD,DOGE-USD,AVAX-USD,DOT-USD,TRX-USD"
 ESTOXX="ASML.AS,SAP.DE,AIR.PA,SIE.DE,LVMH.PA,TTE.PA,MC.PA,SAN.PA,DTE.DE,IBE.MC,PRX.AS,INGA.AS,BN.PA,SU.PA,ADYEN.AS,PHIA.AS,ITX.MC,AD.AS,BBVA.MC,CS.PA,ALV.DE,BNP.PA,ABI.BR,EL.PA,DG.PA,VIE.PA,BAYN.DE,ADS.DE,FP.PA,RMS.PA".split(",")
 NIKKEI="7203.T,6758.T,9984.T,6861.T,8306.T,9433.T,4063.T,6981.T,4502.T,4503.T,8316.T,7974.T,6702.T,8031.T,6501.T,9432.T,4568.T,4507.T,8035.T,2914.T,8001.T,8766.T,4151.T,4188.T,9983.T,6367.T,8058.T,6273.T,4911.T,5108.T".split(",")
 
@@ -297,6 +300,17 @@ if run:
         else:st.markdown("<div style='color:#555;font-size:0.8rem;padding:1rem;'>> NO TICKER WITH ALL 3 SIGNALS</div>",unsafe_allow_html=True)
 else:
     st.markdown("""
+
+    st.markdown("<div style='color:#00ff41; font-size:1.1rem; letter-spacing:2px; margin-top:2rem;'>> ANALISI GRAFICA TRADINGVIEW</div>", unsafe_allow_html=True)
+all_found = list(set(df_ich['TICKER'].tolist() + df_st['TICKER'].tolist() + df_hma['TICKER'].tolist())) if 'df_ich' in locals() else []
+if all_found:
+    sel_ticker = st.selectbox("DETTAGLIO TICKER", sorted(all_found))
+    tv_s = sel_ticker
+    if ".MI" in tv_s: tv_s = "MIL:" + tv_s.replace(".MI","")
+    elif ".DE" in tv_s: tv_s = "XETR:" + tv_s.replace(".DE","")
+    elif ".PA" in tv_s: tv_s = "EURONEXT:" + tv_s.replace(".PA","")
+    components.html(f"""<script src="https://s3.tradingview.com/tv.js"></script><script>new TradingView.widget({{"width":"100%","height":500,"symbol":"{tv_s}","interval":"D","timezone":"Etc/UTC","theme":"dark","style":"1","locale":"it","container_id":"tv"}});</script><div id="tv"></div>""", height=520)
+
     <div style='background:#0d1117; border:1px solid #1a1a1a; padding:3rem; text-align:center; margin-top:4px;'>
         <div style='color:#333; font-size:0.8rem; letter-spacing:3px;'>███████████████</div>
         <div style='color:#00ff41; font-size:1.1rem; letter-spacing:2px; margin:1rem 0;'>> SELEZIONA PARAMETRI E PREMI [ ESEGUI SCREENER ]</div>
