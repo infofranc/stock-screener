@@ -84,22 +84,30 @@ input {
 
 .stProgress > div > div { background: #00ff41 !important; }
 
-/* DATAFRAME FIX - Ensuring high contrast */
-.stDataFrame { 
-    border: 1px solid #00ff41 !important; 
-}
+/* Metrics */
+[data-testid="stMetricValue"] { color: #00ff41 !important; }
 
-/* Target streamlit's internal dataframe styling */
-[data-testid="stDataFrame"] * { 
+/* Ensure table visibility */
+.stTable { 
+    background-color: #0d1117 !important; 
     color: #00ff41 !important; 
-    background-color: #000000 !important; 
+    border: 1px solid #00ff41 !important;
 }
 
-/* Ensure table headers and cell text are visible */
-div[data-testid="stDataFrame"] div[role="gridcell"], 
-div[data-testid="stDataFrame"] div[role="columnheader"] {
+table {
     color: #00ff41 !important;
+}
+
+thead th {
+    background-color: #1a1a1a !important;
+    color: #00ff41 !important;
+    border: 1px solid #00ff41 !important;
+}
+
+tbody td {
     background-color: #0d1117 !important;
+    color: #00ff41 !important;
+    border: 1px solid #1a1a1a !important;
 }
 
 .stSuccess { background: transparent !important; border: 1px solid #00ff41 !important; color: #00ff41 !important; }
@@ -172,7 +180,6 @@ def supertrend(h,l,c,length,mult):
     low=hl2-mult*atr
     d=pd.Series(1,index=c.index)
     
-    # Vectorized check for direction change where possible or simple loop for logic clarity
     for i in range(1,len(c)):
         if c.iloc[i]>up.iloc[i-1]:
             d.iloc[i]=1
@@ -250,8 +257,7 @@ if run:
             if s_hma: res_hma.append(base)
             if s_ich and s_st and s_hma: res_all.append(base)
             
-        except Exception as e:
-            continue
+        except: continue
             
     prog.empty()
     status_msg.empty()
@@ -265,28 +271,28 @@ if run:
     with tab1:
         st.markdown(f"<div style='color:#555;font-size:0.75rem;padding:4px 0;'>> ICHIMOKU BREAKOUT NUVOLA [N={lookback}gg] — {len(res_ich)} SEGNALI</div>",unsafe_allow_html=True)
         if not df_ich.empty:
-            st.dataframe(df_ich,use_container_width=True,hide_index=True)
+            st.table(df_ich)
             st.download_button("[ EXPORT CSV ]",data=to_csv(df_ich),file_name=f"ichimoku_{ts[:10]}.csv",mime="text/csv", key="d1")
         else:st.markdown("<div style='color:#555;font-size:0.8rem;padding:1rem;'>> NO SIGNALS DETECTED</div>",unsafe_allow_html=True)
         
     with tab2:
         st.markdown(f"<div style='color:#555;font-size:0.75rem;padding:4px 0;'>> SUPERTREND REVERSAL BULLISH [N={lookback}gg] — {len(res_st)} SEGNALI</div>",unsafe_allow_html=True)
         if not df_st.empty:
-            st.dataframe(df_st,use_container_width=True,hide_index=True)
+            st.table(df_st)
             st.download_button("[ EXPORT CSV ]",data=to_csv(df_st),file_name=f"supertrend_{ts[:10]}.csv",mime="text/csv", key="d2")
         else:st.markdown("<div style='color:#555;font-size:0.8rem;padding:1rem;'>> NO SIGNALS DETECTED</div>",unsafe_allow_html=True)
         
     with tab3:
         st.markdown(f"<div style='color:#555;font-size:0.75rem;padding:4px 0;'>> HULL MA BULLISH [CLOSE > HMA, SLOPE+] — {len(res_hma)} SEGNALI</div>",unsafe_allow_html=True)
         if not df_hma.empty:
-            st.dataframe(df_hma,use_container_width=True,hide_index=True)
+            st.table(df_hma)
             st.download_button("[ EXPORT CSV ]",data=to_csv(df_hma),file_name=f"hullma_{ts[:10]}.csv",mime="text/csv", key="d3")
         else:st.markdown("<div style='color:#555;font-size:0.8rem;padding:1rem;'>> NO SIGNALS DETECTED</div>",unsafe_allow_html=True)
         
     with tab4:
         st.markdown(f"<div style='color:#ffff00;font-size:0.75rem;padding:4px 0;'>> ALL 3 SIGNALS ACTIVE — {len(res_all)} TICKER</div>",unsafe_allow_html=True)
         if not df_all.empty:
-            st.dataframe(df_all,use_container_width=True,hide_index=True)
+            st.table(df_all)
             st.download_button("[ EXPORT CSV ]",data=to_csv(df_all),file_name=f"all_signals_{ts[:10]}.csv",mime="text/csv", key="d4")
         else:st.markdown("<div style='color:#555;font-size:0.8rem;padding:1rem;'>> NO TICKER WITH ALL 3 SIGNALS</div>",unsafe_allow_html=True)
 else:
