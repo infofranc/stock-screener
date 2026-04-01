@@ -4,4 +4,3 @@ pandas>=2.0
 numpy>=1.26
 plotly>=5.18
 requests>=2.31
-pandas-ta==0.3.14b
