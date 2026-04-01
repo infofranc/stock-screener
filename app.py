@@ -11,10 +11,42 @@ st.set_page_config(page_title="Global Stock Screener", layout="wide")
 st.title("📊 Global Stock Screener — Daily")
 st.caption("⏱ Timeframe: **Daily (1D)** — Yahoo Finance via yfinance")
 
+# LISTE MERCATI
+SP500 = "AAPL,MSFT,GOOGL,AMZN,NVDA,META,TSLA,BRK-B,LLY,V,UNH,JPM,XOM,MA,JNJ,AVGO,WMT,PG,HD,CVX,MRK,COST,ABBV,KO,PEP,ADBE,NFLX,CRM,BAC,TMO,MCD,CSCO,AMD,ACN,DHR,ABT,TXN,WFC,CMCSA,DIS,PM,INTC,VZ,QCOM,NEE,HON,UNP,NKE,ORCL,IBM,RTX,UPS,LOW,BMY,LIN,COP,MS,SPGI,T,CAT,ELV,GE,AMGN,DE,BA,MDT,AXP,INTU,BLK,GS,PLD,ADI,SYK,SBUX,GILD,AMT,BKNG,TJX,ISRG,ADP,MDLZ,LRCX,MMC,VRTX,NOW,PFE,C,TMUS,REGN,CI,MO,CVS,ZTS,EOG,SO,CB,HCA,DUK,ETN,BDX,SCHW".split(",")
+NASDAQ = "AAPL,MSFT,GOOGL,GOOG,AMZN,NVDA,META,TSLA,AVGO,COST,NFLX,AMD,PEP,ADBE,CSCO,TMUS,CMCSA,INTC,TXN,QCOM,INTU,AMGN,HON,AMAT,SBUX,BKNG,ISRG,ADP,VRTX,GILD,REGN,ADI,MU,LRCX,MELI,PANW,KLAC,PYPL,MDLZ,SNPS,CDNS,ASML,MRVL,MAR,CTAS,AZN,ORLY,MNST,FTNT,CSX,ABNB,ADSK,DXCM,CHTR,PCAR,WDAY,NXPI,PAYX,CPRT,CRWD,AEP,ODFL,ROST,KDP,FAST,ON,VRSK,BKR,GEHC,EXC,TEAM,LULU,CSGP,DDOG,CTSH,XEL,IDXX,KHC,BIIB,CCEP,ANSS,ZS,TTD,CDW,WBD,MDB,ILMN,GFS".split(",")
+RUSSELL = "SMCI,KVUE,CELH,DOCS,DECK,IONQ,RBLX,HIMS,TPL,JXN,CCCS,FIVE,MNDY,CASY,MOD,FTAI,MATX,IBP,CHH,CNM,GPI,PLAB,COKE,INSM,NEOG,AIT,BCC,GMED,CBZ,AAON,CWEN,DIOD,HELE,CWST,CNX,HQY,CNXC,APAM,MCY,SKYW,TBBK,CRS,CW,VCTR,MWA,SHOO,SANM,POWL,NSP".split(",")
+FTSE = "ENI.MI,UCG.MI,ISP.MI,TIT.MI,ENEL.MI,STLAM.MI,STM.MI,G.MI,A2A.MI,AZM.MI,CPR.MI,FBK.MI,RACE.MI,BAMI.MI,BMED.MI,TEN.MI,LDO.MI,HER.MI,PST.MI,ATL.MI,SPM.MI,CNHI.MI,BGN.MI,BZU.MI,PRY.MI,MONC.MI,AMP.MI,IP.MI,SRG.MI,REC.MI".split(",")
+DAX = "SIE.DE,SAP.DE,ALV.DE,DTE.DE,VOW3.DE,MBG.DE,BMW.DE,BAYN.DE,ADS.DE,BAS.DE,MUV2.DE,DB1.DE,HEN3.DE,SHL.DE,IFX.DE,DHL.DE,CON.DE,1COV.DE,HNR1.DE,HEI.DE,VOW.DE,BNR.DE,ZAL.DE,RWE.DE,VNA.DE,QIA.DE,PAH3.DE,FRE.DE,P911.DE,HFG.DE".split(",")
+ESTOXX = "ASML.AS,SAP.DE,AIR.PA,SIE.DE,LVMH.PA,TTE.PA,MC.PA,SAN.PA,DTE.DE,IBE.MC,PRX.AS,INGA.AS,BN.PA,SU.PA,ADYEN.AS,PHIA.AS,ITX.MC,AD.AS,BBVA.MC,CS.PA,ALV.DE,BNP.PA,ABI.BR,EL.PA,DG.PA,VIE.PA,BAYN.DE,ADS.DE,FP.PA,RMS.PA".split(",")
+NIKKEI = "7203.T,6758.T,9984.T,6861.T,8306.T,9433.T,4063.T,6981.T,4502.T,4503.T,8316.T,7974.T,6702.T,8031.T,6501.T,9432.T,4568.T,4507.T,8035.T,2914.T,8001.T,8766.T,4151.T,4188.T,9983.T,6367.T,8058.T,6273.T,4911.T,5108.T".split(",")
+
+MARKETS = {
+    "S&P 500 (Top 100)": SP500,
+    "Nasdaq 100": NASDAQ,
+    "Russell 2000 (Top 50)": RUSSELL,
+    "FTSE MIB Italia": FTSE,
+    "DAX 40 Germania": DAX,
+    "EuroStoxx 50": ESTOXX,
+    "Nikkei 225 (Top 30)": NIKKEI,
+    "Tutti i mercati": SP500+NASDAQ+RUSSELL+FTSE+DAX+ESTOXX+NIKKEI,
+    "Custom": []
+}
+
 # SIDEBAR
 st.sidebar.header("⚙️ Parametri")
-TICKERS_DEFAULT = "AAPL,MSFT,GOOGL,AMZN,TSLA,NVDA,META,JPM,XOM,BRK-B,ASML,SAP,TM,BABA,TSM,NESN.SW,SIE.DE,AIR.PA,ENI.MI,SHELL.AS"
-tickers_input = st.sidebar.text_area("Ticker (separati da virgola)", value=TICKERS_DEFAULT, height=150)
+market_choice = st.sidebar.selectbox("Seleziona mercato", list(MARKETS.keys()), index=0)
+
+if market_choice == "Custom":
+    custom_input = st.sidebar.text_area("Inserisci ticker (separati da virgola)", value="AAPL,MSFT,GOOGL", height=100)
+    selected_tickers = [t.strip().upper() for t in custom_input.split(",") if t.strip()]
+else:
+    selected_tickers = MARKETS[market_choice]
+    st.sidebar.info(f"🎯 {len(selected_tickers)} ticker selezionati da '{market_choice}'")
+
+add_custom = st.sidebar.text_input("➕ Aggiungi ticker extra (opzionale, separati da virgola)")
+if add_custom:
+    selected_tickers += [t.strip().upper() for t in add_custom.split(",") if t.strip()]
+
 lookback_days = st.sidebar.slider("Lookback segnali (giorni)", 1, 20, 5)
 period        = st.sidebar.selectbox("Storico", ["3mo","6mo","1y","2y"], index=1)
 
@@ -44,7 +76,7 @@ tg_on_all  = st.sidebar.checkbox("Alert Tutti e 3",  value=True)
 
 run = st.sidebar.button("🔍 Esegui Screener", use_container_width=True)
 
-# INDICATORI NUMPY/PANDAS
+# INDICATORI
 def hma(series, length):
     half = int(length / 2)
     sqrt_len = int(np.sqrt(length))
@@ -134,7 +166,7 @@ def check_hma(df, length):
 
 # MAIN
 if run:
-    tickers = [t.strip().upper() for t in tickers_input.split(",") if t.strip()]
+    tickers = list(set(selected_tickers))
     prog = st.progress(0)
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     res_ich, res_st, res_hma, res_all, skipped = [], [], [], [], []
@@ -158,8 +190,8 @@ if run:
             res_all.append({**base, "Close": c_hma or c_st, "Vol 20gg": v_hma or v_st})
 
     prog.empty()
-    st.success(f"✅ Analisi completata — {ts}")
-    if skipped: st.warning(f"⚠️ Esclusi per volume basso: {', '.join(skipped)}")
+    st.success(f"✅ Analisi completata — {ts} — Scannerizzati {len(tickers)} ticker")
+    if skipped: st.warning(f"⚠️ {len(skipped)} ticker esclusi per volume basso")
 
     # Telegram
     tg_log = []
@@ -170,7 +202,7 @@ if run:
         (tg_on_all, "🎯 Tutti e 3 Segnali",  res_all),
     ]:
         if enabled and rows and tg_token and tg_chat_id:
-            msg = f"*📊 Screener Alert*\n*{label}*\n🕐 {ts} | Daily\n`{'`, `'.join([r['Ticker'] for r in rows])}`\nTotale: *{len(rows)}*"
+            msg = f"*📊 Screener*\n*{label}*\n🕐 {ts} | Daily | {market_choice}\n`{'`, `'.join([r['Ticker'] for r in rows[:10]])}`\nTotale: *{len(rows)}*"
             ok  = send_telegram(tg_token, tg_chat_id, msg)
             tg_log.append(("✅" if ok else "❌", label))
 
@@ -225,18 +257,13 @@ if run:
             st.plotly_chart(fig, use_container_width=True)
 else:
     st.info("👈 Configura i parametri nella sidebar e premi **Esegui Screener**.")
-    st.markdown("""
-    ### Come funziona — Timeframe: **Daily (1D)**
+    st.markdown(f"""
+    ### Come funziona — Timeframe: **Daily (1D)**  
+    🎯 Mercato selezionato: **{market_choice}** ({len(selected_tickers)} ticker)
+    
     | Indicatore | Segnale cercato |
     |---|---|
     | **Ichimoku** | Close che rompe la nuvola verso l'alto negli ultimi N giorni |
     | **SuperTrend** | Direzione che passa da -1 (bearish) a +1 (bullish) |
     | **Hull MA** | Close sopra HMA e HMA con pendenza positiva |
-
-    ### Alert Telegram
-    1. Apri Telegram → cerca **@BotFather**
-    2. Invia `/newbot` → segui le istruzioni → ricevi il **Bot Token**
-    3. Scrivi un messaggio al tuo bot
-    4. Vai su `https://api.telegram.org/bot<TOKEN>/getUpdates` → copia il **chat id**
-    5. Incolla Token e Chat ID nella sidebar
     """)
